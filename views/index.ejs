@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie & Series db Capstone</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <h1>Movie & Series Vault</h1>
+
+        <!-- add movies -->
+        <div class="form-box">
+            <h2>Add a New Movie</h2>
+            <form action="/add" method="POST">
+
+                <label>Movie Title:</label>
+                <input type="text" name="title" placeholder="e.g. Inception" required>
+
+                <label>Rating (1 to 10):</label>
+                <input type="number" name="rating" min="1" max="10" placeholder="10" required>
+
+                <label>Your Review / Notes:</label>
+                <textarea name="review" rows="3" placeholder="Write your thoughts..." required></textarea>
+
+                <button type="submit">Add Movie</button>
+            </form>
+        </div>
+
+        <hr>
+
+        <!-- sort choises -->
+        <div class="sort-box">
+            <b>Sort by:</b>
+            <a href="/?sort=date_added">Date Added</a> | 
+            <a href="/?sort=rating">Rating</a> | 
+            <a href="/?sort=title">Title</a>
+        </div>
+
+        
+
+        <div class="movie-list">
+        
+            <% if (movies.length === 0) { %>
+                <p>No movies added yet!</p>
+            <% } %>
+
+            
+            <% movies.forEach(movie => { %>
+                <div class="movie-item">
+                    <img src="<%= movie.poster_url %>" alt="Poster">
+
+                    <div class="movie-details">
+                        <h3><%= movie.title %> (<%= movie.release_year %>)</h3>
+                        <p class="rating-text">Rating: <b><%= movie.rating %>/10</b></p>
+                        <p class="review-text"><%= movie.review %></p>
+
+                        <details>
+                            <summary>Edit</summary>
+                            <form action="/edit" method="POST" class="edit-form">
+                                <input type="hidden" name="id" value="<%= movie.id %>">
+                                
+                                <label>New Rating:</label>
+                                <input type="number" name="rating" min="1" max="10" value="<%= movie.rating %>" required>
+
+                                <label>New Review:</label>
+                                <textarea name="review" rows="2" required><%= movie.review %></textarea>
+
+                                <button type="submit">Save Changes</button>
+                            </form>
+                        </details>
+
+                        <form action="/delete" method="POST" onsubmit="return confirm('Delete this movie?');">
+                            <input type="hidden" name="id" value="<%= movie.id %>">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+
+    </div>
+
+</body>
+</html>
